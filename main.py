@@ -117,6 +117,14 @@ def pause():
     lab_pause.config(text="Paused", bg="red", fg="white")
 
 
+def toggle_run(event):
+    global paused
+    if paused:
+        start()
+    else:
+        pause()
+
+
 def faster():
     global speed
     speed = speed/2
@@ -193,7 +201,9 @@ def theme_change(event):
 
 root = Tk()
 root.geometry = "400x600"
-root.bind()
+root.bind("<Control-s>", save_menu)
+root.bind("<Control-o>", open_menu)
+root.bind("<space>", toggle_run)
 
 paused = True
 speed = 0.5
@@ -206,9 +216,6 @@ passive_color = "white"
 active_color = "black"
 button_dict = {}
 button_list = []
-
-BIGBUTTON = Button(root, text="IM BIG BIG BUTTON", bg="#984369", height=50, width=100, command=root.destroy)
-BIGBUTTON.grid(row=3, column=0)
 
 """for i in range(x):
     button_list.append([])
