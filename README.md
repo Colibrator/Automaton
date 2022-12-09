@@ -1,0 +1,2 @@
+# Automaton
+Cellular configurable automaton.
