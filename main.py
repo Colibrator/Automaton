@@ -42,6 +42,28 @@ def run():
         time.sleep(speed)
 
 
+def save_theme_menu():
+    global name, branch_save_theme
+    name = StringVar()
+    branch_save_theme = Toplevel(root)
+    entr_save_theme = Entry(branch_save_theme, textvariable=name)
+    but_save_theme = Button(branch_save_theme, text="Save theme")
+    but_save_theme.bind("<Button-1>", save_theme)
+    lab_save_theme = Label(branch_save_theme, text="Give a title")
+    lab_save_theme.pack()
+    entr_save_theme.pack()
+    but_save_theme.pack()
+
+
+def save_theme(event):
+    global paused
+    pause()
+    theme_savefile = open("theme_list.txt", "a")
+    theme_savefile.write("\n" + name.get() + "\n")
+    theme_savefile.write(passive_color + " " + active_color)
+    branch_save_theme.destroy()
+
+
 def save_menu(event="<Button-1>"):
     global name, branch_save
     name = StringVar()
@@ -58,7 +80,7 @@ def save_menu(event="<Button-1>"):
 def save(event):
     global paused
     pause()
-    savefile = open("C:\\Users\\sorok\\PycharmProjects\\automaton\\saves\\" + name.get() + ".txt", "w")
+    savefile = open("saves\\" + name.get() + ".txt", "w")
     savefile.write(str(x) + " " + str(y) + '\n' + '\n')
     for i in button_list:
         newline = ""
@@ -72,10 +94,24 @@ def save(event):
     branch_save.destroy()
 
 
+def open_menu(event="<Button-1>"):
+    global name, branch_open
+    name = StringVar()
+    branch_open = Toplevel(root)
+    entr_open = Entry(branch_open, textvariable=name)
+    but_open = Button(branch_open, text="Open")
+    but_open.bind("<Button-1>", openf)
+    lab_open = Label(branch_open, text="Write a name")
+    lab_open.pack()
+    entr_open.pack()
+    but_open.pack()
+
+
+
 def openf(event):
     global paused, x, y
     pause()
-    openfile = open("C:\\Users\\sorok\\PycharmProjects\\automaton\\saves\\" + name.get() + ".txt", "r")
+    openfile = open("saves\\" + name.get() + ".txt", "r")
     dimensions = openfile.readline().split()
     x = int(dimensions[0])
     y = int(dimensions[1])
@@ -90,19 +126,6 @@ def openf(event):
             root.update()
     openfile.close()
     branch_open.destroy()
-
-
-def open_menu(event="<Button-1>"):
-    global name, branch_open
-    name = StringVar()
-    branch_open = Toplevel(root)
-    entr_open = Entry(branch_open, textvariable=name)
-    but_open = Button(branch_open, text="Open")
-    but_open.bind("<Button-1>", openf)
-    lab_open = Label(branch_open, text="Write a name")
-    lab_open.pack()
-    entr_open.pack()
-    but_open.pack()
 
 
 def start():
@@ -146,7 +169,7 @@ def clear():
 
 
 def dimensions_menu():
-    global dims
+    global dims, branch_dim
     branch_dim = Toplevel(root)
     entr_dim = Entry(branch_dim, textvariable=dims)
     but_dim = Button(branch_dim, text="Change dimensions")
@@ -164,6 +187,7 @@ def dimensions_change(event):
     x = int(l[0])
     y = int(l[1])
     create_field(x, y, cell_frame)
+    branch_dim.destroy()
 
 
 def theme_menu():
@@ -217,14 +241,6 @@ active_color = "black"
 button_dict = {}
 button_list = []
 
-"""for i in range(x):
-    button_list.append([])
-    for j in range(y):
-        but = Button(root, height=1, width=2, bg="black")
-        but.bind("<Button-1>", toggle)
-        but.grid(row=i, column=j)
-        button_list[i].append(but)"""
-
 cell_frame = Frame(root)
 cell_frame.grid(row=0, column=0, columnspan=4)
 create_field(x, y, cell_frame)
@@ -239,6 +255,7 @@ menubar.add_cascade(label='File', menu=file)
 file.add_command(label='Clear', command=clear)
 file.add_command(label='Save', command=save_menu)
 file.add_command(label='Open', command=open_menu)
+file.add_separator()
 file.add_command(label='Exit', command=root.destroy)
 
 timem = Menu(menubar, tearoff=1)
@@ -255,7 +272,11 @@ lab_pause.grid(row=1, column=1)
 view = Menu(menubar, tearoff=1)
 menubar.add_cascade(label='View', menu=view)
 view.add_command(label='Change Dimensions', command=dimensions_menu)
-view.add_command(label='Change Theme', command=theme_menu)
+theme = Menu(view, tearoff=0)
+view.add_cascade(label="Theme...", menu=theme)
+theme.add_command(label='Change Theme', command=theme_menu)
+theme.add_command(label='Save Current Theme', command=save_theme_menu)
+
 
 
 root.mainloop()

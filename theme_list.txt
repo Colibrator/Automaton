@@ -1,0 +1,8 @@
+dark
+black white
+light
+white black
+grayscale
+#555555 #cccccc
+win95
+#08555a #cb2340
