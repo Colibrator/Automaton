@@ -61,7 +61,53 @@ def save_theme(event):
     theme_savefile = open("theme_list.txt", "a")
     theme_savefile.write("\n" + name.get() + "\n")
     theme_savefile.write(passive_color + " " + active_color)
+    theme_savefile.close()
     branch_save_theme.destroy()
+
+
+def open_theme_menu():
+    global name, branch_open_theme
+    name = StringVar()
+    branch_open_theme = Toplevel(root)
+    entr_open_theme = Entry(branch_open_theme, textvariable=name)
+    but_opentheme = Button(branch_open_theme, text="Open theme")
+    but_opentheme.bind("<Button-1>", open_theme)
+    lab_opentheme = Label(branch_open_theme, text="Write the name of your theme")
+    lab_opentheme.pack()
+    entr_open_theme.pack()
+    but_opentheme.pack() 
+
+
+def open_theme(event):
+    global paused, passive_color, active_color, button_list
+    pause()
+    theme_openfile = open("theme_list.txt", "r")
+    current_check = theme_openfile.readline().strip()
+    theme_name = name.get()
+    passive_color_temp = passive_color
+    active_color_temp = active_color
+    while current_check != theme_name and current_check != '':
+        theme_openfile.readline()
+        current_check = theme_openfile.readline().strip()
+    if current_check == theme_name:
+        color_list = theme_openfile.readline().split()
+        passive_color_temp = color_list[0]
+        active_color_temp = color_list[1].strip()
+    elif current_check == '':
+        branch_exeption = Toplevel(root)
+        lab_exeption = Label(branch_exeption, text="There is no theme called {theme_name}")
+        but_exeption = Button(branch_exeption, text="OK", command=branch_exeption.destroy)
+        lab_exeption.pack()
+        but_exeption.pack()
+    for i in button_list:
+        for j in i:
+            if j["bg"] == passive_color:
+                j["bg"] = passive_color_temp
+            else:
+                j["bg"] = active_color_temp
+    passive_color = passive_color_temp
+    active_color = active_color_temp
+    branch_open_theme.destroy()
 
 
 def save_menu(event="<Button-1>"):
@@ -105,7 +151,6 @@ def open_menu(event="<Button-1>"):
     lab_open.pack()
     entr_open.pack()
     but_open.pack()
-
 
 
 def openf(event):
@@ -249,7 +294,7 @@ create_field(x, y, cell_frame)
 
 menubar = Menu(root)
 root.config(menu=menubar)
-root.title("Convay's Game of Life in Tkinter v.2.1")
+root.title("Convay's Game of Life in Tkinter v.2.0.3")
 file = Menu(menubar, tearoff=1)
 menubar.add_cascade(label='File', menu=file)
 file.add_command(label='Clear', command=clear)
@@ -276,6 +321,7 @@ theme = Menu(view, tearoff=0)
 view.add_cascade(label="Theme...", menu=theme)
 theme.add_command(label='Change Theme', command=theme_menu)
 theme.add_command(label='Save Current Theme', command=save_theme_menu)
+theme.add_command(label='Open Theme', command=open_theme_menu)
 
 
 
