@@ -29,15 +29,22 @@ def toggle(event):
 
 
 def run():
+    global gen
     lab_pause.config(text="Unpaused", bg="green", fg="black")
     while not paused:
+        is_changed = False
         rules.rules(x, y, button_list, passive_color, active_color)
         for i in range(x):
             for j in range(y):
-                if button_list[i][j]["fg"] == passive_color:
+                if button_list[i][j]["fg"] == passive_color and button_list[i][j]["bg"] == active_color:
+                    is_changed = True
                     button_list[i][j]["bg"] = passive_color
-                elif button_list[i][j]["fg"] == active_color:
+                elif button_list[i][j]["fg"] == active_color and button_list[i][j]["bg"] == passive_color:
+                    is_changed = True
                     button_list[i][j]["bg"] = active_color
+        if is_changed:
+            gen += 1
+            lab_generations["text"] = "Generations Elapsed: " + str(gen)
         root.update()
         time.sleep(speed)
 
@@ -279,8 +286,9 @@ speed = 0.5
 dims = StringVar()
 col1 = StringVar()
 col2 = StringVar()
-x = 9
-y = 9
+x = 20
+y = 20
+gen = 0
 passive_color = "white"
 active_color = "black"
 button_dict = {}
@@ -294,7 +302,7 @@ create_field(x, y, cell_frame)
 
 menubar = Menu(root)
 root.config(menu=menubar)
-root.title("Convay's Game of Life in Tkinter v.2.0.3")
+root.title("Convay's Game of Life in Tkinter v.2.0.4")
 file = Menu(menubar, tearoff=1)
 menubar.add_cascade(label='File', menu=file)
 file.add_command(label='Clear', command=clear)
@@ -313,6 +321,8 @@ lab_speed = Label(root, text="Current speed: " + str(1 / speed) + " FPS")
 lab_speed.grid(row=1, column=0)
 lab_pause = Label(root, text="Paused", bg="red", fg="white")
 lab_pause.grid(row=1, column=1)
+lab_generations = Label(root, text="Generations Elapsed: " + str(gen))
+lab_generations.grid(row=1, column=2)
 
 view = Menu(menubar, tearoff=1)
 menubar.add_cascade(label='View', menu=view)
