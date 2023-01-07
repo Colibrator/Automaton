@@ -6,3 +6,5 @@ grayscale
 #555555 #cccccc
 win95
 #08555a #cb2340
+blue_theme
+#b2cde6 #a7a7a3
