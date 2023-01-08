@@ -1,8 +1,9 @@
 from tkinter import *
 import time
 import rules
+from cell import *
 
-
+"""
 def create_field(dimension1, dimension2, frame):
     global button_list
     if len(button_list):
@@ -13,22 +14,14 @@ def create_field(dimension1, dimension2, frame):
     for i in range(dimension1):
         button_list.append([])
         for j in range(dimension2):
-            but = Button(frame, height=1, width=2, bg=passive_color)
+            but = Cell(frame, height=1, width=2, bg=passive_color)
             but.bind("<Button-1>", toggle)
             but.grid(row=i, column=j)
             button_list[i].append(but)
+"""
 
 
-def toggle(event):
-    if event.widget["bg"] == active_color:
-        event.widget["bg"] = passive_color
-        event.widget["fg"] = passive_color
-    elif event.widget["bg"] == passive_color:
-        event.widget["bg"] = active_color
-        event.widget["fg"] = active_color
-
-
-def run():
+def run(button_list):
     global gen
     lab_pause.config(text="Unpaused", bg="green", fg="black")
     while not paused:
@@ -183,7 +176,7 @@ def openf(event):
 def start():
     global paused
     paused = False
-    run()
+    run(cell_frame.buttons)
 
 
 def pause():
@@ -294,9 +287,8 @@ active_color = "black"
 button_dict = {}
 button_list = []
 
-cell_frame = Frame(root)
+cell_frame = Field(root, x, y)
 cell_frame.grid(row=0, column=0, columnspan=4)
-create_field(x, y, cell_frame)
 
 
 

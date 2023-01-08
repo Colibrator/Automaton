@@ -1,5 +1,5 @@
 import tkinter as tk
-from main import active_color, passive_color
+
 
 active = 1
 passive = 0
@@ -7,16 +7,21 @@ passive = 0
 class Cell(tk.Button):
 
     def __init__(self, screen):
+        from main import passive_color
         super(Cell, self).__init__(screen, bg=passive_color, height=1, width=2)
         self.state = active
         self.already_changed = False
 
     def change(self):
+        from main import active_color, passive_color
         if self.state == active:
             self.state = passive
+            self["bg"] = passive_color
+            self["fg"] = passive_color
         else:
             self.state = active
-            self.config(bg=active_color)
+            self["bg"] = active_color
+            self["fg"] = active_color
 
     def mouse_entered(self):
         if not self.already_changed:
@@ -48,6 +53,7 @@ class Field(tk.Frame):
         self.bind_all("<B1-Motion>", self.mouse_motion)
 
         self.mouse_pressed = False
+
 
 
     def mouse_down(self, e):
