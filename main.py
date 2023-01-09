@@ -1,7 +1,7 @@
 from tkinter import *
 import time
 import rules
-
+import winfo
 
 def create_field(dimension1, dimension2, frame):
     global button_list
@@ -123,16 +123,32 @@ def save_menu(event="<Button-1>"):
     branch_save = Toplevel(root)
     entr_save = Entry(branch_save, textvariable=name)
     but_save = Button(branch_save, text="Save")
-    but_save.bind("<Button-1>", save)
+    but_save.bind("<Button-1>", save_outer)
     lab_save = Label(branch_save, text="Give a title")
     lab_save.pack()
     entr_save.pack()
     but_save.pack()
+    branch_save.bind("<Return>", save_outer)
 
 
-def save(event):
-    global paused
+def save_outer(event):
+    global paused, branch_warning
     pause()
+    try:
+        open("saves\\" + name.get() + ".txt", "r")
+    except:
+        save_inner()
+    else:
+        branch_warning = winfo.Info(root, "w")
+        branch_warning.set_notice("Are you sure you want to overwrite\nthe file that already exists?")
+        but_warning = Button(branch_warning, text="OK")
+        but_warning.bind("<Button-1>", save_inner)
+        but_warning.grid(row=1, column=0)
+        but_cancel = Button(branch_warning, text="Cancel", command=branch_warning.dismiss)
+        but_cancel.grid(row=1, column=2)
+
+
+def save_inner(event="<Button-1>"):
     savefile = open("saves\\" + name.get() + ".txt", "w")
     savefile.write(str(x) + " " + str(y) + '\n' + '\n')
     for i in button_list:
@@ -145,10 +161,14 @@ def save(event):
         savefile.write(newline + '\n')
     savefile.close()
     branch_save.destroy()
+    try:
+        branch_warning.dismiss()
+    except:
+        pass
 
 
 def open_menu(event="<Button-1>"):
-    global name, branch_open
+    global name, branch_open, lab_open
     name = StringVar()
     branch_open = Toplevel(root)
     entr_open = Entry(branch_open, textvariable=name)
@@ -158,26 +178,31 @@ def open_menu(event="<Button-1>"):
     lab_open.pack()
     entr_open.pack()
     but_open.pack()
+    branch_open.bind("<Return>", openf)
 
 
 def openf(event):
     global paused, x, y
     pause()
-    openfile = open("saves\\" + name.get() + ".txt", "r")
-    dimensions = openfile.readline().split()
-    x = int(dimensions[0])
-    y = int(dimensions[1])
-    openfile.readline()
-    create_field(x, y, cell_frame)
-    for i in range(x):
-        current_row = openfile.readline()
-        for j in range(y):
-            if current_row[j] == "1":
-                button_list[i][j]["fg"] = active_color
-                button_list[i][j]["bg"] = active_color
-            root.update()
-    openfile.close()
-    branch_open.destroy()
+    try:
+        openfile = open("saves\\" + name.get() + ".txt", "r")
+    except:
+        lab_open.config(text="There is no such a file with name %s.txt" % name.get())
+    else:
+        dimensions = openfile.readline().split()
+        x = int(dimensions[0])
+        y = int(dimensions[1])
+        openfile.readline()
+        create_field(x, y, cell_frame)
+        for i in range(x):
+            current_row = openfile.readline()
+            for j in range(y):
+                if current_row[j] == "1":
+                    button_list[i][j]["fg"] = active_color
+                    button_list[i][j]["bg"] = active_color
+                root.update()
+        openfile.close()
+        branch_open.destroy()
 
 
 def start():

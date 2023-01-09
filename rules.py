@@ -1,3 +1,4 @@
+
 def rules(x, y, button_list, col1="black", col2="white") -> int:
     for i in range(x):
         for j in range(y):
