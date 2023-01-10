@@ -126,9 +126,9 @@ def save_menu(event="<Button-1>"):
     saves_list = Listbox(branch_save)
     file_no = 0
     for source, dir, files in os.walk(r"C:\Users\sorok\PycharmProjects\automaton\saves"):
-        for name in files:
-            if name.endswith((".fld")):
-                saves_list.insert(file_no, name[:-4])
+        for file_name in files:
+            if file_name.endswith((".fld")):
+                saves_list.insert(file_no, file_name[:-4])
                 file_no += 1
     but_save = Button(branch_save, text="Save")
     but_save.bind("<Button-1>", save_outer)
@@ -181,12 +181,12 @@ def open_menu(event="<Button-1>"):
     name = StringVar()
     branch_open = Toplevel(root)
     entr_open = Entry(branch_open, textvariable=name)
-    saves_list = Listbox(branch_save)
+    saves_list = Listbox(branch_open)
     file_no = 0
     for source, dir, files in os.walk(r"C:\Users\sorok\PycharmProjects\automaton\saves"):
-        for name in files:
-            if name.endswith((".fld")):
-                saves_list.insert(file_no, name[:-4])
+        for file_name in files:
+            if file_name.endswith((".fld")):
+                saves_list.insert(file_no, file_name[:-4])
                 file_no += 1
     but_open = Button(branch_open, text="Open")
     but_open.bind("<Button-1>", openf)
