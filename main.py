@@ -2,6 +2,7 @@ from tkinter import *
 import time
 import rules
 import winfo
+import os
 
 def create_field(dimension1, dimension2, frame):
     global button_list
@@ -122,10 +123,18 @@ def save_menu(event="<Button-1>"):
     name = StringVar()
     branch_save = Toplevel(root)
     entr_save = Entry(branch_save, textvariable=name)
+    saves_list = Listbox(branch_save)
+    file_no = 0
+    for source, dir, files in os.walk(r"C:\Users\sorok\PycharmProjects\automaton\saves"):
+        for name in files:
+            if name.endswith((".fld")):
+                saves_list.insert(file_no, name[:-4])
+                file_no += 1
     but_save = Button(branch_save, text="Save")
     but_save.bind("<Button-1>", save_outer)
     lab_save = Label(branch_save, text="Give a title")
     lab_save.pack()
+    saves_list.pack()
     entr_save.pack()
     but_save.pack()
     branch_save.bind("<Return>", save_outer)
@@ -135,7 +144,7 @@ def save_outer(event):
     global paused, branch_warning
     pause()
     try:
-        open("saves\\" + name.get() + ".txt", "r")
+        open("saves\\" + name.get() + ".fld", "r")
     except:
         save_inner()
     else:
@@ -149,7 +158,7 @@ def save_outer(event):
 
 
 def save_inner(event="<Button-1>"):
-    savefile = open("saves\\" + name.get() + ".txt", "w")
+    savefile = open("saves\\" + name.get() + ".fld", "w")
     savefile.write(str(x) + " " + str(y) + '\n' + '\n')
     for i in button_list:
         newline = ""
@@ -172,10 +181,18 @@ def open_menu(event="<Button-1>"):
     name = StringVar()
     branch_open = Toplevel(root)
     entr_open = Entry(branch_open, textvariable=name)
+    saves_list = Listbox(branch_save)
+    file_no = 0
+    for source, dir, files in os.walk(r"C:\Users\sorok\PycharmProjects\automaton\saves"):
+        for name in files:
+            if name.endswith((".fld")):
+                saves_list.insert(file_no, name[:-4])
+                file_no += 1
     but_open = Button(branch_open, text="Open")
     but_open.bind("<Button-1>", openf)
     lab_open = Label(branch_open, text="Write a name")
     lab_open.pack()
+    saves_list.pack()
     entr_open.pack()
     but_open.pack()
     branch_open.bind("<Return>", openf)
@@ -185,9 +202,9 @@ def openf(event):
     global paused, x, y
     pause()
     try:
-        openfile = open("saves\\" + name.get() + ".txt", "r")
+        openfile = open("saves\\" + name.get() + ".fld", "r")
     except:
-        lab_open.config(text="There is no such a file with name %s.txt" % name.get())
+        lab_open.config(text="There is no such a file with name %s.fld" % name.get())
     else:
         dimensions = openfile.readline().split()
         x = int(dimensions[0])
